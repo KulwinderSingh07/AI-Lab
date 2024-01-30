@@ -1,7 +1,9 @@
 import math
+import os
 
 board = [' ' for x in range(10)]
 board[0]='Non valid'
+LeaderBoard={}
 
 
 def printBoard(board):
@@ -88,12 +90,21 @@ def getOptimumMove(board, playerTurn):
 
     return best
 
-def gamePlay():
-    # print("Enter your Player Name:")
-    PlayerName=input("Enter your Player Name => ")
+def gamePlay(repeat):
     PreviousTurn='N'
     PlayerTurn='O'
-    print('Your Player Name is =>',PlayerName)
+    global PlayerName
+    if(repeat!=1):
+        PlayerName=input("Enter your Player Name => ")
+        print('Your Player Name is =>',PlayerName," your are O")
+        LeaderBoard[PlayerName]={
+            'wins':0,
+            'loss':0
+        }
+    else:
+        for i in range(10):
+            if(i!=0):
+                board[i]=' '
     print('Bot name is => Chitti')
     print('First turn is yours')
     printBoard(board)
@@ -107,6 +118,7 @@ def gamePlay():
             board[positionObj['position']]='X'
             PreviousTurn='X'
             PlayerTurn='O'
+        os.system('clear')
         printBoard(board)
         if(PreviousTurn!='N' and IsWinner(board,'X')):
             break
@@ -116,11 +128,25 @@ def gamePlay():
             break
     
     if(PreviousTurn!='N' and IsWinner(board,'X')):
+        LeaderBoard[PlayerName]['loss']+=1
         print('Chitti won the game')
     elif (PreviousTurn!='N' and IsWinner(board,'O')):
+        LeaderBoard[PlayerName]['wins']+=1
         print(PlayerName,' won the game')
     elif (PreviousTurn!='N' and num_empty_square(board)==0):
         print("Match was a draw well played")
-
     
-gamePlay()
+    playAgain=input("Want to have a reamtch Enter Yes otherwise anything => ")
+    if(playAgain=='Yes'):
+        gamePlay(1)
+    else:
+        return
+
+
+gamePlay(0)
+print("|            LeaderBoard             |")
+print("______________________________________")
+print("|     Player      |     Chitti(Bot)  |")
+print(f"|       {LeaderBoard[PlayerName]['wins']}         |         {LeaderBoard[PlayerName]['loss']}        |")
+
+
